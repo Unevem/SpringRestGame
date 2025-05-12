@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: f336a022ae28f9b4aa497e55ff3eccc7
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - ResourceDisplay: {instanceID: 0}
+  - resourceTextPrefab: {fileID: 2104927801639013542, guid: a96c4cc87a9302f49b7df68dd86e0cb7, type: 3}
+  - grid: {instanceID: 0}
+  - buildCursor: {fileID: 1805777694797466542, guid: cb31c95d7f1dfa04b84a9df65ab07076, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
