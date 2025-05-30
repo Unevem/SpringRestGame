@@ -29,12 +29,13 @@ public class Building : MonoBehaviour
     }
 
     // Adicione este método para detectar cliques
-    private void OnMouseDown()
-    {
+
+    //private void OnMouseDown()
+    //{
         // Verifica se o GameManager existe e tem o método BuyBuilding
-        if (gm != null)
-        {
-            gm.BuyBuilding(this); // Passa esta própria construção como parâmetro
-        }
-    }
+        //if (gm != null)
+        //{
+        //    gm.BuyBuilding(this); // Passa esta própria construção como parâmetro
+      //  }
+    //}
 }
