@@ -1,0 +1,34 @@
+{
+    "name": "Camera",
+    "maps": [
+        {
+            "name": "Camera",
+            "id": "4ab01a6d-95d7-437c-bb94-c266509a13cc",
+            "actions": [
+                {
+                    "name": "Setas",
+                    "type": "Button",
+                    "id": "a12c3d82-28e6-4fb9-89e6-116fcfaa92a6",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "4afc2974-3c7c-42c9-b63e-bbac8417a2cc",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Setas",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
