@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1441628635043962171}
   - component: {fileID: 5504755111304945559}
   m_Layer: 0
-  m_Name: BuildingExample
+  m_Name: BuildingCasaNova
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -52,10 +52,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   costs:
   - type: 0
-    amount: 0
-  incomeType: 0
-  resourceIncrease: 0
-  timeForIncrease: 10
+    amount: 10
+  - type: 2
+    amount: 1
+  incomeType: 2
+  resourceIncrease: 5
+  timeForIncrease: 200
   sizeInTiles: {x: 1, y: 1}
 --- !u!61 &1441628635043962171
 BoxCollider2D:
@@ -93,8 +95,8 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.97066665, y: 0.85866666}
-    newSize: {x: 3.64, y: 3.22}
+    oldSize: {x: 1, y: 1}
+    newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
@@ -143,12 +145,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: cfbe3e2bdadc41448a7babd08a599e22, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 1497e13c7ad27774191be9822ea43aef, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 3.64, y: 3.22}
+  m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1

@@ -2,14 +2,21 @@ using UnityEngine;
 
 public class Building : MonoBehaviour
 {
-    [SerializeField] private int cost;
-    [SerializeField] private int ResourceIncrease;
+    [System.Serializable]
+    public struct ResourceCost
+    {
+        public ResourceType type;
+        public int amount;
+    }
+
+    [SerializeField] private ResourceCost[] costs;
+    [SerializeField] private ResourceType incomeType;
+    [SerializeField] private int resourceIncrease;
     [SerializeField] private float timeForIncrease;
     [SerializeField] private Vector2 sizeInTiles = Vector2.one;
 
     public Vector2 SizeInTiles => sizeInTiles;
-
-    public int Cost => cost;
+    public ResourceCost[] Costs => costs;
 
     private float nextIncreaseTime;
     private GameManager gm;
@@ -24,9 +31,10 @@ public class Building : MonoBehaviour
         if (Time.time > nextIncreaseTime)
         {
             nextIncreaseTime = Time.time + timeForIncrease;
-            gm.Resource += ResourceIncrease;
+            gm.AddResource(incomeType, resourceIncrease);
         }
     }
+<<<<<<< Updated upstream:Assets/_Scripts/Building.cs
 
     // Adicione este método para detectar cliques
     private void OnMouseDown()
@@ -38,3 +46,6 @@ public class Building : MonoBehaviour
         }
     }
 }
+=======
+}
+>>>>>>> Stashed changes:Assets/_Scripts/BuildingExample.cs
