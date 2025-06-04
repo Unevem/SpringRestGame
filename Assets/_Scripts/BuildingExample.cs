@@ -34,7 +34,6 @@ public class Building : MonoBehaviour
             gm.AddResource(incomeType, resourceIncrease);
         }
     }
-<<<<<<< Updated upstream:Assets/_Scripts/Building.cs
 
     // Adicione este método para detectar cliques
     private void OnMouseDown()
@@ -46,6 +45,3 @@ public class Building : MonoBehaviour
         }
     }
 }
-=======
-}
->>>>>>> Stashed changes:Assets/_Scripts/BuildingExample.cs
