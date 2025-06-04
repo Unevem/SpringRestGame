@@ -2123,7 +2123,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d197bdb605df8e54cb17ae26100bbdec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nomeDoLevelDeJogo: JogoTeste
+  nomeDoLevelDeJogo: Jogo
+  VoltarMenu: 
   painelMenuInicial: {fileID: 1595846819}
   painelOpcoes: {fileID: 1275463982}
 --- !u!4 &1434097147
