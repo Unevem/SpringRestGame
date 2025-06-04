@@ -1,5 +1,9 @@
-﻿using TMPro;
+using System.Collections.Generic;
+using TMPro;
+
 using UnityEngine;
+
+public enum ResourceType { Wood, Stone, People }
 
 public class GameManager : MonoBehaviour
 {
@@ -16,7 +20,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject CanvasConstruções;
 
     private float totalRecursosGastos = 0f;
-    private int totalConstrucoesFeitas = 0; // ✅ NOVO: contador de construções feitas
+    private int totalConstrucoesFeitas = 0; 
 
     public float Resource
     {
@@ -24,15 +28,24 @@ public class GameManager : MonoBehaviour
         set => resource = value;
     }
 
+    [SerializeField] private Dictionary<ResourceType, int> resources = new();
+
+
     private Building buildingToPlace;
     private GameObject spawnedResourceText;
 
     private void Start()
     {
-        if (ResourceDisplay == null && resourceTextPrefab != null)
+        // Inicializa os recursos com valores iniciais
+        resources[ResourceType.Wood] = 100;
+        resources[ResourceType.Stone] = 80;
+        resources[ResourceType.People] = 10;
+
+        if (resourceDisplay == null && resourceTextPrefab != null)
+
         {
             spawnedResourceText = Instantiate(resourceTextPrefab);
-            ResourceDisplay = spawnedResourceText.GetComponent<TMP_Text>();
+            resourceDisplay = spawnedResourceText.GetComponent<TMP_Text>();
 
             if (GameObject.Find("Canvas") != null)
             {
@@ -50,6 +63,7 @@ public class GameManager : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0) && buildingToPlace != null)
         {
+
             Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Vector2 gridPosition = new Vector2(Mathf.Round(mousePosition.x), Mathf.Round(mousePosition.y));
 
@@ -70,33 +84,78 @@ public class GameManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Delete))
         {
             GameOver();
+
+            }
+        }
+
+
+        if (resourceDisplay != null)
+        {
+            resourceDisplay.text = $"Wood: {GetResource(ResourceType.Wood)}\n" +
+                                   $"Stone: {GetResource(ResourceType.Stone)}\n" +
+                                   $"People: {GetResource(ResourceType.People)}";
+
         }
     }
 
     public void BuyBuilding(Building building)
     {
-        if (resource >= building.Cost)
+        bool canAfford = true;
+
+        foreach (var cost in building.Costs)
         {
+            if (GetResource(cost.type) < cost.amount)
+            {
+                canAfford = false;
+                break;
+            }
+        }
+
+        if (canAfford)
+        {
+            foreach (var cost in building.Costs)
+            {
+                SpendResource(cost.type, cost.amount);
+            }
+
             buildCursor.gameObject.SetActive(true);
             buildCursor.GetComponent<SpriteRenderer>().sprite = building.GetComponent<SpriteRenderer>().sprite;
             Cursor.visible = false;
-
-            resource -= building.Cost;
-            totalRecursosGastos += building.Cost;
-
             buildingToPlace = building;
         }
     }
+
 
     public void GameOver()
     {
         if (gameOverScreen != null)
         {
             gameOverScreen.gameObject.SetActive(true);
-            gameOverScreen.Setup(totalRecursosGastos, totalConstrucoesFeitas); // ✅ Passa também as construções feitas
+            gameOverScreen.Setup(totalRecursosGastos, totalConstrucoesFeitas); 
         }
 
         if (CanvasMenu != null) CanvasMenu.SetActive(false);
         if (CanvasConstruções != null) CanvasConstruções.SetActive(false);
+
+
+    }
+
+    public int GetResource(ResourceType type) =>
+        resources.TryGetValue(type, out int amount) ? amount : 0;
+
+    public void AddResource(ResourceType type, int amount)
+    {
+        if (!resources.ContainsKey(type))
+            resources[type] = 0;
+
+        resources[type] += amount;
+    }
+
+    public bool SpendResource(ResourceType type, int amount)
+    {
+        if (GetResource(type) < amount) return false;
+
+        resources[type] -= amount;
+        return true;
     }
 }
