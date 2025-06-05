@@ -6,15 +6,10 @@ using UnityEngine.UI;
 public class Timer : MonoBehaviour
 {
     [Header("Configurações")]
-    public float duracaoEstacaoMinutos = 3f;
+    public float duracaoEstacaoMinutos = 2f;
     public Text textoRelogio;
     public Text textoEstacao;
     public Text textoDesafio;
-
-    [Header("Recursos do Jogo")]
-    public int casas = 10;
-    public int recursos = 100;
-    public int populacao = 50;
 
     private float tempoDecorrido = 0f;
     private float duracaoEstacaoSegundos;
@@ -38,6 +33,7 @@ public class Timer : MonoBehaviour
             AvancarEstacao();
             tempoDecorrido = 0f;
             AplicarDesafioEstacional();
+            //AdicionarRecurso();
         }
 
         AtualizarUI();
