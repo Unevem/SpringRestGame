@@ -35,14 +35,5 @@ public class Building : MonoBehaviour
         }
     }
 
-    // Adicione este m�todo para detectar cliques
-
-    //private void OnMouseDown()
-    //{
-        // Verifica se o GameManager existe e tem o m�todo BuyBuilding
-        if (gm != null)
-        {
-            gm.BuyBuilding(this); // Passa esta pr�pria constru��o como par�metro
-        }
 }
 

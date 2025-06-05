@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using TMPro;
-
 using UnityEngine;
 
 public enum ResourceType { Wood, Stone, People }
@@ -8,7 +7,7 @@ public enum ResourceType { Wood, Stone, People }
 public class GameManager : MonoBehaviour
 {
     [SerializeField] private float resource;
-    [SerializeField] private TMP_Text ResourceDisplay;
+    [SerializeField] private TMP_Text resourceDisplay;  // camelCase para variáveis privadas
     [SerializeField] private GameObject resourceTextPrefab;
 
     [SerializeField] private BuildCursor buildCursor;
@@ -16,11 +15,11 @@ public class GameManager : MonoBehaviour
 
     public GameOverScreen gameOverScreen;
 
-    [SerializeField] private GameObject CanvasMenu;
-    [SerializeField] private GameObject CanvasConstruções;
+    [SerializeField] private GameObject canvasMenu;
+    [SerializeField] private GameObject canvasConstrucoes;
 
     private float totalRecursosGastos = 0f;
-    private int totalConstrucoesFeitas = 0; 
+    private int totalConstrucoesFeitas = 0;
 
     public float Resource
     {
@@ -29,7 +28,6 @@ public class GameManager : MonoBehaviour
     }
 
     [SerializeField] private Dictionary<ResourceType, int> resources = new();
-
 
     private Building buildingToPlace;
     private GameObject spawnedResourceText;
@@ -42,14 +40,14 @@ public class GameManager : MonoBehaviour
         resources[ResourceType.People] = 10;
 
         if (resourceDisplay == null && resourceTextPrefab != null)
-
         {
             spawnedResourceText = Instantiate(resourceTextPrefab);
             resourceDisplay = spawnedResourceText.GetComponent<TMP_Text>();
 
-            if (GameObject.Find("Canvas") != null)
+            GameObject canvas = GameObject.Find("Canvas");
+            if (canvas != null)
             {
-                spawnedResourceText.transform.SetParent(GameObject.Find("Canvas").transform);
+                spawnedResourceText.transform.SetParent(canvas.transform);
             }
         }
 
@@ -63,7 +61,6 @@ public class GameManager : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0) && buildingToPlace != null)
         {
-
             Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Vector2 gridPosition = new Vector2(Mathf.Round(mousePosition.x), Mathf.Round(mousePosition.y));
 
@@ -77,24 +74,20 @@ public class GameManager : MonoBehaviour
                 buildCursor.gameObject.SetActive(false);
                 Cursor.visible = true;
 
-                totalConstrucoesFeitas++; // ✅ Conta cada construção feita
+                totalConstrucoesFeitas++;
             }
         }
 
         if (Input.GetKeyDown(KeyCode.Delete))
         {
             GameOver();
-
-            }
         }
-
 
         if (resourceDisplay != null)
         {
             resourceDisplay.text = $"Wood: {GetResource(ResourceType.Wood)}\n" +
                                    $"Stone: {GetResource(ResourceType.Stone)}\n" +
                                    $"People: {GetResource(ResourceType.People)}";
-
         }
     }
 
@@ -125,23 +118,25 @@ public class GameManager : MonoBehaviour
         }
     }
 
-
     public void GameOver()
     {
         if (gameOverScreen != null)
         {
             gameOverScreen.gameObject.SetActive(true);
-            gameOverScreen.Setup(totalRecursosGastos, totalConstrucoesFeitas); 
+            gameOverScreen.Setup(totalRecursosGastos, totalConstrucoesFeitas);
         }
 
-        if (CanvasMenu != null) CanvasMenu.SetActive(false);
-        if (CanvasConstruções != null) CanvasConstruções.SetActive(false);
+        if (canvasMenu != null)
+            canvasMenu.SetActive(false);
 
-
+        if (canvasConstrucoes != null)
+            canvasConstrucoes.SetActive(false);
     }
 
-    public int GetResource(ResourceType type) =>
-        resources.TryGetValue(type, out int amount) ? amount : 0;
+    public int GetResource(ResourceType type)
+    {
+        return resources.TryGetValue(type, out int amount) ? amount : 0;
+    }
 
     public void AddResource(ResourceType type, int amount)
     {
@@ -153,7 +148,8 @@ public class GameManager : MonoBehaviour
 
     public bool SpendResource(ResourceType type, int amount)
     {
-        if (GetResource(type) < amount) return false;
+        if (GetResource(type) < amount)
+            return false;
 
         resources[type] -= amount;
         return true;
