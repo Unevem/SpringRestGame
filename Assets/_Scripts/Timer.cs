@@ -54,18 +54,18 @@ public class Timer : MonoBehaviour
                 break;
 
             case 1: // Verão
-                casas = Mathf.Max(0, casas - 1);
+                //casas = Mathf.Max(0, casas - 1);
                 textoDesafio.text = "Incêndio! -1 casa";
                 break;
 
             case 2: // Outono
-                recursos = Mathf.FloorToInt(recursos / 2f);
+                //recursos = Mathf.FloorToInt(recursos / 2f);
                 textoDesafio.text = "Pragas! Recursos ÷2";
                 break;
 
             case 3: // Inverno
                 int mortes = Random.Range(1, 4);
-                populacao = Mathf.Max(0, populacao - mortes);
+                //populacao = Mathf.Max(0, populacao - mortes);
                 textoDesafio.text = $"Frio intenso! -{mortes} habitantes";
                 break;
         }
@@ -78,11 +78,5 @@ public class Timer : MonoBehaviour
         int minutos = (int)(tempoDecorrido / 60f);
         int segundos = (int)(tempoDecorrido % 60f);
         textoRelogio.text = string.Format("{0:00}:{1:00}", minutos, segundos);
-
-        // Atualiza textos
-        textoEstacao.text = $"{estacoes[indiceEstacaoAtual]}\n" +
-                          $"Casas: {casas}\n" +
-                          $"Recursos: {recursos}\n" +
-                          $"População: {populacao}";
     }
 }
