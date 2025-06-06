@@ -16,24 +16,43 @@ public class Timer : MonoBehaviour
     private string[] estacoes = { "PRIMAVERA", "VERÃO", "OUTONO", "INVERNO" };
     private int indiceEstacaoAtual = 0;
 
-    // Start is called before the first frame update
+    [System.Serializable]
+    public struct SeasonalMultiplier
+    {
+        public ResourceType type;
+        public float multiplier;  // negativo ou positivo
+    }
+
+    public SeasonalMultiplier[] seasonalMultipliers;
+
+    [Header("Consumo de comida")]
+    public float foodConsumptionPerHousePerMinute = 2f;
+    private float tempoParaConsumoDeComida = 0f;
+    private const float intervaloConsumoComida = 60f;  // 1 minuto
+
     void Start()
     {
         duracaoEstacaoSegundos = duracaoEstacaoMinutos * 60f;
         AtualizarUI();
     }
 
-    // Update is called once per frame
     void Update()
     {
         tempoDecorrido += Time.deltaTime;
+        tempoParaConsumoDeComida += Time.deltaTime;
 
         if (tempoDecorrido >= duracaoEstacaoSegundos)
         {
             AvancarEstacao();
             tempoDecorrido = 0f;
             AplicarDesafioEstacional();
-            //AdicionarRecurso();
+            AdicionarRecurso();
+        }
+
+        if (tempoParaConsumoDeComida >= intervaloConsumoComida)
+        {
+            tempoParaConsumoDeComida = 0f;
+            ConsumirComida();
         }
 
         AtualizarUI();
@@ -43,40 +62,89 @@ public class Timer : MonoBehaviour
     {
         indiceEstacaoAtual = (indiceEstacaoAtual + 1) % 4;
         Debug.Log(estacoes[indiceEstacaoAtual] + " começou!");
+
+        if (textoEstacao != null)
+            textoEstacao.text = estacoes[indiceEstacaoAtual];
     }
 
     void AplicarDesafioEstacional()
     {
         switch (indiceEstacaoAtual)
         {
-            case 0: // Primavera
+            case 0:
                 textoDesafio.text = "Estação tranquila!";
                 break;
-
-            case 1: // Verão
-                //casas = Mathf.Max(0, casas - 1);
+            case 1:
                 textoDesafio.text = "Incêndio! -1 casa";
                 break;
-
-            case 2: // Outono
-                //recursos = Mathf.FloorToInt(recursos / 2f);
+            case 2:
                 textoDesafio.text = "Pragas! Recursos ÷2";
                 break;
-
-            case 3: // Inverno
+            case 3:
                 int mortes = Random.Range(1, 4);
-                //populacao = Mathf.Max(0, populacao - mortes);
                 textoDesafio.text = $"Frio intenso! -{mortes} habitantes";
                 break;
         }
     }
 
-
     void AtualizarUI()
     {
-        // Formata o tempo: MM:SS
         int minutos = (int)(tempoDecorrido / 60f);
         int segundos = (int)(tempoDecorrido % 60f);
         textoRelogio.text = string.Format("{0:00}:{1:00}", minutos, segundos);
+    }
+
+    void AdicionarRecurso()
+    {
+        GameManager gm = FindObjectOfType<GameManager>();
+        var totalIncreases = gm.GetTotalResourceIncreasePerType();
+
+        foreach (var entry in totalIncreases)
+        {
+            float multiplier = 1f;
+
+            foreach (var mult in seasonalMultipliers)
+            {
+                if (mult.type == entry.Key)
+                {
+                    multiplier = mult.multiplier;
+                    break;
+                }
+            }
+
+            int seasonalBonus = Mathf.RoundToInt(entry.Value * multiplier);
+            gm.AddResource(entry.Key, seasonalBonus);
+
+            Debug.Log($"Bônus estacional: {entry.Key} + {seasonalBonus}");
+        }
+    }
+
+    void ConsumirComida()
+    {
+        GameManager gm = FindObjectOfType<GameManager>();
+        int quantidadeDeCasas = ContarCasas();
+
+        int totalConsumo = Mathf.RoundToInt(foodConsumptionPerHousePerMinute * quantidadeDeCasas);
+
+        gm.SpendResource(ResourceType.Food, totalConsumo);
+
+        Debug.Log($"Consumo de comida: -{totalConsumo} (Casas: {quantidadeDeCasas}, X: {foodConsumptionPerHousePerMinute})");
+    }
+
+    int ContarCasas()
+    {
+        int count = 0;
+
+        Building[] todasConstrucoes = FindObjectsOfType<Building>();
+
+        foreach (var b in todasConstrucoes)
+        {
+            if (b.IncomeType == ResourceType.People)  // Definimos que 'casas' são as que geram People
+            {
+                count++;
+            }
+        }
+
+        return count;
     }
 }
