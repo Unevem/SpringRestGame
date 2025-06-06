@@ -6,50 +6,33 @@ public enum ResourceType { Wood, Stone, People, Food }
 
 public class GameManager : MonoBehaviour
 {
-    [SerializeField] private float resource;
-    [SerializeField] private TMP_Text resourceDisplay;
-    [SerializeField] private GameObject resourceTextPrefab;
-
+    [Header("Configurações Gerais")]
     [SerializeField] private BuildCursor buildCursor;
-    [SerializeField] private Tile[] tiles;
-
+    [SerializeField] private GameObject resourceTextPrefab;
     public GameOverScreen gameOverScreen;
-
     [SerializeField] private GameObject canvasMenu;
     [SerializeField] private GameObject canvasConstrucoes;
 
+    [Header("UI de Recursos")]
+    [SerializeField] private TMP_Text woodText;
+    [SerializeField] private TMP_Text stoneText;
+    [SerializeField] private TMP_Text peopleText;
+    [SerializeField] private TMP_Text foodText;
+
+    private Dictionary<ResourceType, int> resources = new();
     private float totalRecursosGastos = 0f;
     private int totalConstrucoesFeitas = 0;
-
-    public float Resource
-    {
-        get => resource;
-        set => resource = value;
-    }
-
-    [SerializeField] private Dictionary<ResourceType, int> resources = new();
-
     private Building buildingToPlace;
-    private GameObject spawnedResourceText;
 
     private void Start()
     {
+        // Inicialização dos recursos
         resources[ResourceType.Wood] = 100;
         resources[ResourceType.Stone] = 80;
         resources[ResourceType.People] = 10;
         resources[ResourceType.Food] = 50;
 
-        if (resourceDisplay == null && resourceTextPrefab != null)
-        {
-            spawnedResourceText = Instantiate(resourceTextPrefab);
-            resourceDisplay = spawnedResourceText.GetComponent<TMP_Text>();
-
-            GameObject canvas = GameObject.Find("Canvas");
-            if (canvas != null)
-            {
-                spawnedResourceText.transform.SetParent(canvas.transform);
-            }
-        }
+        UpdateAllResourceUI();
 
         if (gameOverScreen != null)
         {
@@ -58,6 +41,11 @@ public class GameManager : MonoBehaviour
     }
 
     private void Update()
+    {
+        HandleBuildingPlacement();
+    }
+
+    private void HandleBuildingPlacement()
     {
         if (Input.GetMouseButtonDown(0) && buildingToPlace != null)
         {
@@ -68,58 +56,110 @@ public class GameManager : MonoBehaviour
 
             if (tile != null && !tile.IsOccupied)
             {
-                Instantiate(buildingToPlace, tile.transform.position, Quaternion.identity);
-                AddPeopleFromBuilding(buildingToPlace);
-
-                buildingToPlace = null;
-                tile.SetIsOccupied(true);
-                buildCursor.gameObject.SetActive(false);
-                Cursor.visible = true;
-
-                totalConstrucoesFeitas++;
+                PlaceBuilding(tile);
             }
         }
+    }
 
-        if (Input.GetKeyDown(KeyCode.Delete))
-        {
-            GameOver();
-        }
+    private void PlaceBuilding(Tile tile)
+    {
+        Instantiate(buildingToPlace, tile.transform.position, Quaternion.identity);
+        AddPeopleFromBuilding(buildingToPlace);
 
-        if (resourceDisplay != null)
-        {
-            resourceDisplay.text = $"Wood: {GetResource(ResourceType.Wood)}\n" +
-                                   $"Stone: {GetResource(ResourceType.Stone)}\n" +
-                                   $"People: {GetResource(ResourceType.People)}\n" +
-                                   $"Food: {GetResource(ResourceType.Food)}";
-        }
+        buildingToPlace = null;
+        tile.SetIsOccupied(true);
+        buildCursor.gameObject.SetActive(false);
+        Cursor.visible = true;
+
+        totalConstrucoesFeitas++;
     }
 
     public void BuyBuilding(Building building)
     {
-        bool canAfford = true;
+        if (CanAffordBuilding(building))
+        {
+            PurchaseBuilding(building);
+        }
+    }
 
+    private bool CanAffordBuilding(Building building)
+    {
         foreach (var cost in building.Costs)
         {
             if (GetResource(cost.type) < cost.amount)
             {
-                canAfford = false;
-                break;
+                return false;
             }
         }
+        return true;
+    }
 
-        if (canAfford)
+    private void PurchaseBuilding(Building building)
+    {
+        foreach (var cost in building.Costs)
         {
-            foreach (var cost in building.Costs)
-            {
-                SpendResource(cost.type, cost.amount);
-            }
+            SpendResource(cost.type, cost.amount);
+        }
 
-            buildCursor.gameObject.SetActive(true);
-            buildCursor.GetComponent<SpriteRenderer>().sprite = building.GetComponent<SpriteRenderer>().sprite;
-            Cursor.visible = false;
-            buildingToPlace = building;
+        buildCursor.gameObject.SetActive(true);
+        buildCursor.GetComponent<SpriteRenderer>().sprite = building.GetComponent<SpriteRenderer>().sprite;
+        Cursor.visible = false;
+        buildingToPlace = building;
+    }
+
+    // ===== SISTEMA DE RECURSOS ATUALIZADO =====
+    private void UpdateAllResourceUI()
+    {
+        woodText.text = GetResource(ResourceType.Wood).ToString();
+        stoneText.text = GetResource(ResourceType.Stone).ToString();
+        peopleText.text = GetResource(ResourceType.People).ToString();
+        foodText.text = GetResource(ResourceType.Food).ToString();
+    }
+
+    private void UpdateResourceUI(ResourceType type)
+    {
+        switch (type)
+        {
+            case ResourceType.Wood:
+                woodText.text = GetResource(type).ToString();
+                break;
+            case ResourceType.Stone:
+                stoneText.text = GetResource(type).ToString();
+                break;
+            case ResourceType.People:
+                peopleText.text = GetResource(type).ToString();
+                break;
+            case ResourceType.Food:
+                foodText.text = GetResource(type).ToString();
+                break;
         }
     }
+
+    public int GetResource(ResourceType type)
+    {
+        return resources.TryGetValue(type, out int amount) ? amount : 0;
+    }
+
+    public void AddResource(ResourceType type, int amount)
+    {
+        if (!resources.ContainsKey(type))
+            resources[type] = 0;
+
+        resources[type] += amount;
+        UpdateResourceUI(type);
+    }
+
+    public bool SpendResource(ResourceType type, int amount)
+    {
+        if (GetResource(type) < amount)
+            return false;
+
+        resources[type] -= amount;
+        totalRecursosGastos += amount;
+        UpdateResourceUI(type);
+        return true;
+    }
+    // ===== FIM DO SISTEMA DE RECURSOS =====
 
     public void AddPeopleFromBuilding(Building building)
     {
@@ -137,34 +177,8 @@ public class GameManager : MonoBehaviour
             gameOverScreen.Setup(totalRecursosGastos, totalConstrucoesFeitas);
         }
 
-        if (canvasMenu != null)
-            canvasMenu.SetActive(false);
-
-        if (canvasConstrucoes != null)
-            canvasConstrucoes.SetActive(false);
-    }
-
-    public int GetResource(ResourceType type)
-    {
-        return resources.TryGetValue(type, out int amount) ? amount : 0;
-    }
-
-    public void AddResource(ResourceType type, int amount)
-    {
-        if (!resources.ContainsKey(type))
-            resources[type] = 0;
-
-        resources[type] += amount;
-    }
-
-    public bool SpendResource(ResourceType type, int amount)
-    {
-        if (GetResource(type) < amount)
-            return false;
-
-        resources[type] -= amount;
-        totalRecursosGastos += amount;
-        return true;
+        canvasMenu?.SetActive(false);
+        canvasConstrucoes?.SetActive(false);
     }
 
     public Dictionary<ResourceType, int> GetTotalResourceIncreasePerType()
@@ -172,7 +186,6 @@ public class GameManager : MonoBehaviour
         Dictionary<ResourceType, int> totalIncrease = new();
 
         Building[] allBuildings = FindObjectsOfType<Building>();
-
         foreach (Building building in allBuildings)
         {
             ResourceType type = building.IncomeType;

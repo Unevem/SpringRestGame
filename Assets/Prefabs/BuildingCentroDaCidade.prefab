@@ -52,9 +52,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   costs: []
-  incomeType: 0
-  resourceIncrease: 0
-  timeForIncrease: 0
+  incomeType: 2
+  resourceIncrease: 1
+  timeForIncrease: 10
   sizeInTiles: {x: 1, y: 1}
 --- !u!61 &1441628635043962171
 BoxCollider2D:
@@ -92,7 +92,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 3.29, y: 3.29}
+    oldSize: {x: 1.0966667, y: 1.0966667}
     newSize: {x: 3.29, y: 3.29}
     adaptiveTilingThreshold: 0.5
     drawMode: 0

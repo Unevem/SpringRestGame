@@ -26,7 +26,7 @@ public class Timer : MonoBehaviour
     public SeasonalMultiplier[] seasonalMultipliers;
 
     [Header("Consumo de comida")]
-    public float foodConsumptionPerHousePerMinute = 2f;
+    public float foodConsumptionPerHousePerMinute = 1f;
     private float tempoParaConsumoDeComida = 0f;
     private const float intervaloConsumoComida = 60f;  // 1 minuto
 
@@ -36,8 +36,18 @@ public class Timer : MonoBehaviour
         AtualizarUI();
     }
 
+
+
     void Update()
     {
+
+        Animator anim = GetComponent<Animator>();
+        if (anim != null)
+        {
+            anim.SetTrigger("Fogo");
+        }
+
+
         tempoDecorrido += Time.deltaTime;
         tempoParaConsumoDeComida += Time.deltaTime;
 
@@ -96,6 +106,11 @@ public class Timer : MonoBehaviour
 
             // Inicia a remoção da construção após 10 segundos
             StartCoroutine(DestruirConstrucao(construcoesEmChamas, 10f));
+            Animator anim = GetComponent<Animator>();
+            if (anim != null)
+            {
+                anim.SetTrigger("Fogo");
+            }
         }
     }
 

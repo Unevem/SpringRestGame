@@ -51,10 +51,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0aa083549d441ed49a46a158650d90e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  costs: []
-  incomeType: 0
-  resourceIncrease: 0
-  timeForIncrease: 0
+  costs:
+  - type: 0
+    amount: 15
+  - type: 1
+    amount: 5
+  - type: 2
+    amount: 3
+  incomeType: 3
+  resourceIncrease: 1
+  timeForIncrease: 1
   sizeInTiles: {x: 1, y: 1}
 --- !u!61 &1441628635043962171
 BoxCollider2D:
@@ -91,8 +97,8 @@ BoxCollider2D:
   m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.4257106, y: 0.051033583}
-    oldSize: {x: 4.28, y: 4.28}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1.07, y: 1.07}
     newSize: {x: 4.28, y: 4.28}
     adaptiveTilingThreshold: 0.5
     drawMode: 0

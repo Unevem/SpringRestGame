@@ -4,10 +4,15 @@ MonoImporter:
   externalObjects: {}
   serializedVersion: 2
   defaultReferences:
-  - ResourceDisplay: {instanceID: 0}
-  - resourceTextPrefab: {fileID: 2104927801639013542, guid: a96c4cc87a9302f49b7df68dd86e0cb7, type: 3}
-  - grid: {instanceID: 0}
   - buildCursor: {fileID: 1805777694797466542, guid: cb31c95d7f1dfa04b84a9df65ab07076, type: 3}
+  - resourceTextPrefab: {fileID: 2104927801639013542, guid: a96c4cc87a9302f49b7df68dd86e0cb7, type: 3}
+  - gameOverScreen: {instanceID: 0}
+  - canvasMenu: {fileID: 1993052558307472153, guid: 4063b082ec9619f4ea99ee4aaa2960ad, type: 3}
+  - canvasConstrucoes: {fileID: 4830848293832577187, guid: dd99fee5f3a4f9449aa511bf95b816c7, type: 3}
+  - woodText: {instanceID: 0}
+  - stoneText: {instanceID: 0}
+  - peopleText: {instanceID: 0}
+  - foodText: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
