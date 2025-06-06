@@ -55,7 +55,59 @@ public class Timer : MonoBehaviour
             ConsumirComida();
         }
 
+        if (indiceEstacaoAtual == 1)
+        {
+            VerificarIncendio();
+        }
+
         AtualizarUI();
+    }
+
+    void VerificarIncendio()
+    {
+        float chance = Random.Range(0f, 100f); // Gera um número entre 0 e 100
+        if (chance <= 1.5f) // Apenas 1.5% de chance por segundo
+        {
+            IniciarIncendio();
+        }
+    }
+
+    void IniciarIncendio()
+    {
+        Building[] todasConstrucoes = FindObjectsOfType<Building>();
+
+        if (todasConstrucoes.Length > 0)
+        {
+            Building construcoesEmChamas = todasConstrucoes[Random.Range(0, todasConstrucoes.Length)];
+
+            if (construcoesEmChamas.CompareTag("OnFire"))
+                return;
+
+            Debug.Log($"Incêndio! {construcoesEmChamas.name} está pegando fogo!");
+
+            construcoesEmChamas.tag = "OnFire";
+
+            // Adiciona um efeito visual (mudar cor)
+            SpriteRenderer sr = construcoesEmChamas.GetComponent<SpriteRenderer>();
+            if (sr != null)
+            {
+                sr.color = Color.red;
+            }
+
+            // Inicia a remoção da construção após 10 segundos
+            StartCoroutine(DestruirConstrucao(construcoesEmChamas, 10f));
+        }
+    }
+
+    IEnumerator DestruirConstrucao(Building building, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        if (building != null)
+        {
+            Debug.Log($"{building.name} foi destruída pelo fogo!");
+            Destroy(building.gameObject);
+        }
     }
 
     void AvancarEstacao()
@@ -76,6 +128,7 @@ public class Timer : MonoBehaviour
                 break;
             case 1:
                 textoDesafio.text = "Incêndio! -1 casa";
+                VerificarIncendio();
                 break;
             case 2:
                 textoDesafio.text = "Pragas! Recursos ÷2";
