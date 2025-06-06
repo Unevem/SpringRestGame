@@ -17,6 +17,8 @@ public class Building : MonoBehaviour
 
     public Vector2 SizeInTiles => sizeInTiles;
     public ResourceCost[] Costs => costs;
+    public ResourceType IncomeType => incomeType;
+    public int ResourceIncrease => resourceIncrease;
 
     private float nextIncreaseTime;
     private GameManager gm;
@@ -28,12 +30,13 @@ public class Building : MonoBehaviour
 
     private void Update()
     {
+        if (incomeType == ResourceType.People)
+            return;
+
         if (Time.time > nextIncreaseTime)
         {
             nextIncreaseTime = Time.time + timeForIncrease;
             gm.AddResource(incomeType, resourceIncrease);
         }
     }
-
 }
-

@@ -2,12 +2,12 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public enum ResourceType { Wood, Stone, People }
+public enum ResourceType { Wood, Stone, People, Food }
 
 public class GameManager : MonoBehaviour
 {
     [SerializeField] private float resource;
-    [SerializeField] private TMP_Text resourceDisplay;  // camelCase para variáveis privadas
+    [SerializeField] private TMP_Text resourceDisplay;
     [SerializeField] private GameObject resourceTextPrefab;
 
     [SerializeField] private BuildCursor buildCursor;
@@ -34,10 +34,10 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        // Inicializa os recursos com valores iniciais
         resources[ResourceType.Wood] = 100;
         resources[ResourceType.Stone] = 80;
         resources[ResourceType.People] = 10;
+        resources[ResourceType.Food] = 50;
 
         if (resourceDisplay == null && resourceTextPrefab != null)
         {
@@ -69,6 +69,8 @@ public class GameManager : MonoBehaviour
             if (tile != null && !tile.IsOccupied)
             {
                 Instantiate(buildingToPlace, tile.transform.position, Quaternion.identity);
+                AddPeopleFromBuilding(buildingToPlace);
+
                 buildingToPlace = null;
                 tile.SetIsOccupied(true);
                 buildCursor.gameObject.SetActive(false);
@@ -87,7 +89,8 @@ public class GameManager : MonoBehaviour
         {
             resourceDisplay.text = $"Wood: {GetResource(ResourceType.Wood)}\n" +
                                    $"Stone: {GetResource(ResourceType.Stone)}\n" +
-                                   $"People: {GetResource(ResourceType.People)}";
+                                   $"People: {GetResource(ResourceType.People)}\n" +
+                                   $"Food: {GetResource(ResourceType.Food)}";
         }
     }
 
@@ -115,6 +118,14 @@ public class GameManager : MonoBehaviour
             buildCursor.GetComponent<SpriteRenderer>().sprite = building.GetComponent<SpriteRenderer>().sprite;
             Cursor.visible = false;
             buildingToPlace = building;
+        }
+    }
+
+    public void AddPeopleFromBuilding(Building building)
+    {
+        if (building.IncomeType == ResourceType.People)
+        {
+            AddResource(ResourceType.People, building.ResourceIncrease);
         }
     }
 
@@ -152,6 +163,27 @@ public class GameManager : MonoBehaviour
             return false;
 
         resources[type] -= amount;
+        totalRecursosGastos += amount;
         return true;
+    }
+
+    public Dictionary<ResourceType, int> GetTotalResourceIncreasePerType()
+    {
+        Dictionary<ResourceType, int> totalIncrease = new();
+
+        Building[] allBuildings = FindObjectsOfType<Building>();
+
+        foreach (Building building in allBuildings)
+        {
+            ResourceType type = building.IncomeType;
+            int increase = building.ResourceIncrease;
+
+            if (!totalIncrease.ContainsKey(type))
+                totalIncrease[type] = 0;
+
+            totalIncrease[type] += increase;
+        }
+
+        return totalIncrease;
     }
 }

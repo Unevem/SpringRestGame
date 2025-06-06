@@ -50,14 +50,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0aa083549d441ed49a46a158650d90e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-
-  costs:
-  - type: 0
-    amount: 30
-  incomeType: 1
-  resourceIncrease: 10
-  timeForIncrease: 60
-
+  costs: []
+  incomeType: 0
+  resourceIncrease: 0
+  timeForIncrease: 0
   sizeInTiles: {x: 1, y: 1}
 --- !u!61 &1441628635043962171
 BoxCollider2D:
@@ -144,10 +140,8 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-
   m_SortingOrder: 0
-
-  m_Sprite: {fileID: 21300000, guid: 0cbddf0025f56af4985dad95cce19d52, type: 3}
+  m_Sprite: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -155,6 +149,6 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
